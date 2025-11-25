@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>Travel Etiquette Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- iPhoneホーム画面追加用（将来PWA化するなら活きてくる） -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <style>
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+          background: #f2f2f7;
+          display: flex;
+          justify-content: center;
+          padding: 16px;
+        }
+
+        .phone-frame {
+          width: 390px;
+          max-width: 100%;
+          height: 844px;
+          max-height: 100vh;
+          border-radius: 32px;
+          background: #000;
+          padding: 10px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+          display: flex;
+          justify-content: center;
+          align-items: stretch;
+        }
+
+        .app {
+          background: #fff;
+          border-radius: 26px;
+          overflow: hidden;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .app-header {
+          padding: 14px 16px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          border-bottom: 1px solid #e5e5ea;
+        }
+
+        .back-btn {
+          border-radius: 999px;
+          padding: 6px 10px;
+          font-size: 14px;
+          border: none;
+          background: #f2f2f7;
+          cursor: pointer;
+          display: none; /* 詳細画面のときだけ表示 */
+        }
+
+        .app-title {
+          font-weight: 600;
+          font-size: 17px;
+        }
+
+        .app-subtitle {
+          font-size: 12px;
+          color: #8e8e93;
+          margin-left: auto;
+        }
+
+        .app-content {
+          padding: 16px;
+          overflow-y: auto;
+          flex: 1;
+          background: #f2f2f7;
+        }
+
+        .search-box {
+          margin-bottom: 12px;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 10px 12px;
+          border-radius: 999px;
+          border: 1px solid #d1d1d6;
+          font-size: 14px;
+          outline: none;
+        }
+
+        .search-input:focus {
+          border-color: #007aff;
+        }
+
+        .section-title {
+          font-size: 14px;
+          font-weight: 600;
+          margin: 8px 0;
+          color: #6e6e73;
+        }
+
+        .country-list {
+          list-style: none;
+        }
+
+        .country-item {
+          background: #fff;
+          border-radius: 14px;
+          padding: 12px 14px;
+          margin-bottom: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          cursor: pointer;
+          border: 1px solid #e5e5ea;
+        }
+
+        .country-main {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .country-name {
+          font-size: 15px;
+          font-weight: 600;
+        }
+
+        .country-meta {
+          font-size: 12px;
+          color: #8e8e93;
+        }
+
+        .chevron {
+          font-size: 16px;
+          color: #c7c7cc;
+        }
+
+        .empty-message {
+          font-size: 13px;
+          color: #8e8e93;
+          margin-top: 12px;
+        }
+
+        .card {
+          background: #fff;
+          border-radius: 16px;
+          padding: 16px;
+          margin-bottom: 12px;
+          border: 1px solid #e5e5ea;
+        }
+
+        .greeting-card {
+          background: #fff;
+          border-radius: 12px;
+          padding: 10px 12px;
+          margin-bottom: 8px;
+          border: 1px solid #e5e5ea;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          cursor: pointer;
+        }
+
+        .greeting-card-main {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .greeting-card-title {
+          font-size: 14px;
+          font-weight: 600;
+        }
+
+        .greeting-card-sub {
+          font-size: 11px;
+          color: #8e8e93;
+        }
+
+        .greeting-title-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          margin-bottom: 6px;
+        }
+
+        .greeting-title {
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        .greeting-tag {
+          font-size: 10px;
+          padding: 2px 8px;
+          border-radius: 999px;
+          background: #f2f2f7;
+          color: #636366;
+        }
+
+        .greeting-table {
+          width: 100%;
+          font-size: 12px;
+          border-collapse: collapse;
+          margin-top: 4px;
+        }
+
+        .greeting-table td {
+          padding: 3px 0;
+          vertical-align: top;
+        }
+
+        .greeting-label {
+          width: 28%;
+          color: #636366;
+          padding-right: 6px;
+          white-space: nowrap;
+        }
+
+        .greeting-phrase {
+          color: #111;
+        }
+
+        .greeting-reading {
+          color: #8e8e93;
+          font-size: 11px;
+        }
+
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          margin-bottom: 6px;
+        }
+
+        .card-title {
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        .card-tag {
+          font-size: 10px;
+          padding: 2px 8px;
+          border-radius: 999px;
+          background: #f2f2f7;
+          color: #636366;
+        }
+
+        .card-body {
+          font-size: 13px;
+          color: #3a3a3c;
+          line-height: 1.5;
+        }
+
+        .hint {
+          font-size: 11px;
+          color: #8e8e93;
+          margin-bottom: 8px;
+        }
+
+        .badge-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          margin-top: 6px;
+        }
+
+        .badge {
+          font-size: 10px;
+          padding: 2px 6px;
+          border-radius: 999px;
+          background: #e5f2ff;
+          color: #007aff;
+        }
+
+        .hidden {
+          display: none;
+        }
+
+        @media (max-width: 430px) {
+          body {
+            padding: 0;
+          }
+          .phone-frame {
+            width: 100%;
+            height: 100vh;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+          }
+          .app {
+            border-radius: 0;
+          }
+        }
+    </style>
+</head>
+<body>
+<div class="phone-frame">
+    <div class="app">
+        <header class="app-header">
+            <button class="back-btn" id="backBtn">＜ 戻る</button>
+            <div class="app-title" id="appTitle">旅行マナーガイド β版</div>
+            <div class="app-subtitle" id="appSubtitle">国を選んでマナー確認</div>
+        </header>
+
+        <main class="app-content">
+            <!-- 国リスト画面 -->
+            <section id="listView">
+                <div class="search-box">
+                    <input
+                            id="searchInput"
+                            type="search"
+                            class="search-input"
+                            placeholder="国名で検索（例: アメリカ / USA / Italy）"
+                    />
+                </div>
+                <div class="section-title">対応国</div>
+                <ul class="country-list" id="countryList"></ul>
+                <div class="empty-message hidden" id="emptyMessage">
+                    該当する国が見つかりませんでした。
+                </div>
+            </section>
+
+            <!-- 詳細画面 -->
+            <section id="detailView" class="hidden">
+                <div class="hint" id="countryMeta"></div>
+                <div id="greetingContainer"></div>
+                <div id="ruleList"></div>
+            </section>
+            <!-- ★ 基本のあいさつ詳細画面（新規） -->
+            <section id="greetingDetailView" class="hidden">
+                <div class="hint" id="greetingDetailHint"></div>
+                <div id="greetingDetailList"></div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<script>
+    // --- データ定義（デモ用：ここに国とマナーを追加していく） ---
+// --- データ定義（デモ用：ここに国とマナーを追加していく） ---
+const countries = [
+  {
+    code: "US",
+    nameJa: "🇺🇸アメリカ合衆国",
+    nameEn: "United States",
+    region: "北米",
+    keywords: ["アメリカ", "USA", "US", "United States", "U.S."],
+    notes: "チップや距離感など、日本と大きく文化差が出やすい国です。",
+    greetings: [
+      {
+        label: "初対面",
+        phrase: "Nice to meet you.",
+        reading: "ナイス トゥ ミーチュー"
+      },
+      {
+        label: "朝",
+        phrase: "Good morning.",
+        reading: "グッド モーニング"
+      },
+      {
+        label: "昼",
+        phrase: "Good afternoon.",
+        reading: "グッド アフタヌーン"
+      },
+      {
+        label: "夜",
+        phrase: "Good evening.",
+        reading: "グッド イーブニング"
+      },
+      {
+        label: "食事はじめ",
+        phrase: "Let's eat.",
+        reading: "レッツ イート"
+      },
+      {
+        label: "食事おわり",
+        phrase: "Thank you for the meal.",
+        reading: "サンキュー フォー ザ ミール"
+      },
+      {
+        label: "就寝前",
+        phrase: "Good night.",
+        reading: "グッド ナイト"
+      },
+      {
+        label: "感謝",
+        phrase: "Thank you very much.",
+        reading: "サンキュー ベリーマッチ"
+      },
+      {
+        label: "謝罪",
+        phrase: "I'm sorry.",
+        reading: "アイム ソーリー"
+      },
+      {
+        label: "別れ",
+        phrase: "Goodbye / See you later.",
+        reading: "グッバイ／スィーユー レイター"
+      }
+    ],
+    rules: [
+      {
+        title: "チップはほぼ必須",
+        category: "お金・支払い",
+        body: "レストランやタクシーなどでは、合計金額の15〜20％程度のチップが一般的です。チップ込み料金(“gratuity included”)かどうかも確認しましょう。",
+        tags: ["レストラン", "タクシー", "チップ"]
+      },
+      {
+        title: "パーソナルスペースを尊重",
+        category: "コミュニケーション",
+        body: "初対面でベタベタ近づきすぎないほうが無難です。にこやかな挨拶と、適度な距離感を保つのが◎。",
+        tags: ["距離感", "会話"]
+      },
+      {
+        title: "公共の場でのアルコール",
+        category: "法律・ルール",
+        body: "州によっては路上での飲酒や、袋に入っていない酒瓶の持ち歩きが禁止されている場合があります（“open container law”）。現地のルールを事前に確認しましょう。",
+        tags: ["お酒", "路上飲酒", "州法"]
+      },
+      {
+        title: "チップ込みのテイクアウトは不要なことも",
+        category: "お金・支払い",
+        body: "セルフサービス中心のカフェやフードコートのテイクアウトでは、チップは任意のことが多いです。ローカルの人のやり方も参考にしましょう。",
+        tags: ["テイクアウト", "チップ"]
+      }
+    ]
+  },
+  {
+    code: "IT",
+    nameJa: "🇮🇹イタリア",
+    nameEn: "Italy",
+    region: "ヨーロッパ",
+    keywords: ["イタリア", "Italy", "Italia"],
+    notes: "教会での服装や、食事の時間帯など“ゆったり文化”がポイント。",
+    greetings: [
+      {
+        label: "初対面",
+        phrase: "Piacere.",
+        reading: "ピアチェーレ"
+      },
+      {
+        label: "朝",
+        phrase: "Buongiorno.",
+        reading: "ボンジョルノ"
+      },
+      {
+        label: "昼",
+        phrase: "Ciao. / Buon pomeriggio.",
+        reading: "チャオ／ボン ポメリッジョ"
+      },
+      {
+        label: "夜",
+        phrase: "Buonasera.",
+        reading: "ボナセーラ"
+      },
+      {
+        label: "食事はじめ",
+        phrase: "Buon appetito!",
+        reading: "ボナッペティート"
+      },
+      {
+        label: "食事おわり",
+        phrase: "Grazie, era delizioso.",
+        reading: "グラッツィエ、エラ デリツィオーゾ"
+      },
+      {
+        label: "就寝前",
+        phrase: "Buonanotte.",
+        reading: "ボナノッテ"
+      },
+      {
+        label: "感謝",
+        phrase: "Grazie mille.",
+        reading: "グラッツィエ ミッレ"
+      },
+      {
+        label: "謝罪",
+        phrase: "Mi dispiace.",
+        reading: "ミ ディスピアーチェ"
+      },
+      {
+        label: "別れ",
+        phrase: "Arrivederci. / Ciao.",
+        reading: "アリヴェデルチ／チャオ"
+      }
+    ],
+    rules: [
+      {
+        title: "教会では露出を控える",
+        category: "服装・マナー",
+        body: "肩や太ももが大きく出る服装、帽子は教会内ではNG。ストールを1枚持っておくと便利です。",
+        tags: ["教会", "服装", "宗教施設"]
+      },
+      {
+        title: "バールでのコーヒー文化",
+        category: "飲食マナー",
+        body: "カウンターで立ち飲みする“エスプレッソ文化”が一般的で、テーブル席は席料が加算されることがあります。値段表の“Banco（カウンター）”“Tavolo（テーブル）”の違いに注意。",
+        tags: ["バール", "エスプレッソ", "席料"]
+      },
+      {
+        title: "食事時間は日本より遅め",
+        category: "生活リズム",
+        body: "ランチは13時頃、ディナーは20時以降が普通。早い時間だと店が開いていないこともあるので、営業時間を確認して動きましょう。",
+        tags: ["レストラン", "営業時間"]
+      },
+      {
+        title: "電車・バスの切符は自分で“刻印”",
+        category: "交通ルール",
+        body: "紙のチケットの場合、ホームや車内の刻印機（黄色の機械など）に通して日付スタンプを押さないと“無賃乗車”扱いになることがあります。",
+        tags: ["電車", "バス", "検札"]
+      }
+    ]
+  },
+  {
+    code: "JP",
+    nameJa: "🇯🇵日本",
+    nameEn: "Japan",
+    region: "アジア",
+    keywords: ["日本", "Japan", "Nihon", "Nippon"],
+    notes: "訪日外国人向けの説明用にも使える日本の基本マナーです。",
+    greetings: [
+      {
+        label: "初対面",
+        phrase: "はじめまして",
+        reading: "ハジメマシテ"
+      },
+      {
+        label: "朝",
+        phrase: "おはようございます",
+        reading: "オハヨウゴザイマス"
+      },
+      {
+        label: "昼",
+        phrase: "こんにちは",
+        reading: "コンニチハ"
+      },
+      {
+        label: "夜",
+        phrase: "こんばんは",
+        reading: "コンバンハ"
+      },
+      {
+        label: "食事はじめ",
+        phrase: "いただきます",
+        reading: "イタダキマス"
+      },
+      {
+        label: "食事おわり",
+        phrase: "ごちそうさまでした",
+        reading: "ゴチソウサマデシタ"
+      },
+      {
+        label: "就寝前",
+        phrase: "おやすみなさい",
+        reading: "オヤスミナサイ"
+      },
+      {
+        label: "感謝",
+        phrase: "ありがとうございます",
+        reading: "アリガトウゴザイマス"
+      },
+      {
+        label: "謝罪",
+        phrase: "すみません／申し訳ありません",
+        reading: "スミマセン／モウシワケアリマセン"
+      },
+      {
+        label: "別れ",
+        phrase: "さようなら／失礼します",
+        reading: "サヨウナラ／シツレイシマス"
+      }
+    ],
+    rules: [
+      {
+        title: "電車内では静かに",
+        category: "公共マナー",
+        body: "電車やバスの中では通話を控え、音漏れにも注意します。優先席付近ではマナーモードが基本です。",
+        tags: ["電車", "バス", "静粛"]
+      },
+      {
+        title: "チップ文化は基本的にない",
+        category: "お金・支払い",
+        body: "レストランやタクシーなどでチップは不要です。代わりに“ありがとう”と伝えると良い印象になります。",
+        tags: ["チップ", "レストラン"]
+      },
+      {
+        title: "ゴミは持ち帰りが基本",
+        category: "公共マナー",
+        body: "街中のゴミ箱は多くありません。ペットボトルや包装紙は、ホテルや自宅まで持ち帰るのが一般的です。",
+        tags: ["ゴミ", "街中"]
+      },
+      {
+        title: "並ぶ文化を尊重",
+        category: "公共マナー",
+        body: "駅・バス停・お店の入口など、多くの場所で列に並ぶ習慣があります。割り込みはマナー違反とされています。",
+        tags: ["行列", "公共", "順番"]
+      },
+      {
+        title: "歩きながらの飲食は控えめに",
+        category: "公共マナー",
+        body: "観光地を除き、歩きながらの飲食は好まれないことがあります。屋台やカフェの近くで食べきるのが安心です。",
+        tags: ["飲食", "歩行", "街中"]
+      },
+      {
+        title: "神社・寺では静かに",
+        category: "宗教・文化",
+        body: "写真撮影禁止のエリアや、帽子を脱ぐべき場所があります。宗教施設では静かに行動し、祈りを妨げないようにしましょう。",
+        tags: ["神社", "寺", "宗教施設"]
+      },
+      {
+        title: "靴を脱ぐ文化に注意",
+        category: "生活マナー",
+        body: "家庭・旅館・一部のレストランでは靴を脱ぐ必要があります。靴を脱ぐ場所には“靴を脱いでください”などの案内があります。",
+        tags: ["靴", "和室", "旅館"]
+      },
+      {
+        title: "エスカレーターは片側に立つ",
+        category: "公共マナー",
+        body: "地域によって異なりますが、東京では左側に立ち、右側を歩行者用に空けることが一般的です。案内表示に従いましょう。",
+        tags: ["エスカレーター", "公共"]
+      },
+      {
+        title: "温泉ではタオルを湯船に入れない",
+        category: "温泉マナー",
+        body: "日本の温泉では、タオルは湯船に入れず頭や体を洗うときだけ使用します。湯船は清潔に保つことがマナーです。",
+        tags: ["温泉", "タオル", "入浴"]
+      },
+      {
+        title: "公共の場でのスキンシップは控えめに",
+        category: "コミュニケーション",
+        body: "抱擁やキスなどのスキンシップは日常ではあまり見られません。公共の場では控えめにするのが無難です。",
+        tags: ["スキンシップ", "文化差"]
+      }
+    ]
+  },
+  // ここから追加分 -------------------------
+  {
+    code: "GB",
+    nameJa: "🇬🇧イギリス",
+    nameEn: "United Kingdom",
+    region: "ヨーロッパ",
+    keywords: ["イギリス", "UK", "United Kingdom", "Britain", "イングランド", "ロンドン"],
+    notes: "行列文化と“Please”“Thank you”がとても大事な国です。",
+    rules: [
+      {
+        title: "列に並ぶ文化を尊重",
+        category: "公共マナー",
+        body: "バス停やレジなどでは、きちんと順番に並ぶことがとても重視されます。割り込みは強いマイナス印象になるので注意。",
+        tags: ["行列", "バス", "レジ"]
+      },
+      {
+        title: "“Please”と“Thank you”をこまめに",
+        category: "コミュニケーション",
+        body: "お願いするときやお礼を言うときに、“Please”“Thank you”を添えると丁寧な印象になります。日本人が思う以上に頻度高めでOKです。",
+        tags: ["あいさつ", "会話"]
+      },
+      {
+        title: "パブでのオーダー方法",
+        category: "飲食マナー",
+        body: "伝統的なパブでは、席ではなくカウンターに自分で行き、飲み物やフードを注文し、その場で支払うスタイルが一般的です。",
+        tags: ["パブ", "お酒", "カウンター"]
+      }
+    ]
+  },
+  {
+    code: "CA",
+    nameJa: "🇨🇦カナダ",
+    nameEn: "Canada",
+    region: "北米",
+    keywords: ["カナダ", "Canada", "CA", "トロント", "バンクーバー"],
+    notes: "アメリカに似つつも、多文化・多民族社会としての寛容さが特徴。",
+    rules: [
+      {
+        title: "チップはアメリカと同程度",
+        category: "お金・支払い",
+        body: "レストランやタクシーでは15〜20％のチップが一般的です。サービス料込みかどうか、レシートを確認しましょう。",
+        tags: ["チップ", "レストラン", "タクシー"]
+      },
+      {
+        title: "多様性への配慮",
+        category: "コミュニケーション",
+        body: "多民族・多文化社会であり、出身や宗教、性別に関するデリケートな質問は避けた方が無難です。相手の自己紹介の範囲に合わせると安心です。",
+        tags: ["多様性", "会話"]
+      },
+      {
+        title: "野生動物への接し方",
+        category: "安全",
+        body: "国立公園などでリスやシカ、クマなどを見かけても、むやみに近づいたり餌を与えたりしないことが大切です。現地の標識やレンジャーの指示に従いましょう。",
+        tags: ["国立公園", "野生動物"]
+      }
+    ]
+  },
+  {
+    code: "SG",
+    nameJa: "🇸🇬シンガポール",
+    nameEn: "Singapore",
+    region: "アジア",
+    keywords: ["シンガポール", "Singapore", "SG"],
+    notes: "罰金制度が厳しく、きれいで秩序だった都市国家です。",
+    rules: [
+      {
+        title: "ゴミのポイ捨てや喫煙に厳罰",
+        category: "法律・ルール",
+        body: "路上でのポイ捨てや指定場所以外での喫煙には高額の罰金が科されることがあります。喫煙所やゴミ箱の位置を事前に確認すると安心です。",
+        tags: ["ゴミ", "喫煙", "罰金"]
+      },
+      {
+        title: "MRT（地下鉄）内での飲食禁止",
+        category: "公共マナー",
+        body: "MRTやバスの中での飲食は原則禁止で、ガムやドリアンなども持ち込みが嫌がられることがあります。車内では飲食しないのが安全です。",
+        tags: ["電車", "バス", "飲食禁止"]
+      },
+      {
+        title: "ホーカーセンターでの座席マナー",
+        category: "飲食マナー",
+        body: "ティッシュや名刺などをテーブルの上に置いて席をキープする“チョープ”という文化があります。すでに物が置かれている席は使わないようにしましょう。",
+        tags: ["ホーカーズ", "フードコート", "席取り"]
+      }
+    ]
+  },
+  {
+    code: "TH",
+    nameJa: "🇹🇭タイ",
+    nameEn: "Thailand",
+    region: "アジア",
+    keywords: ["タイ", "Thailand", "バンコク"],
+    notes: "仏教国であり、王室への敬意が非常に重視される国です。",
+    rules: [
+      {
+        title: "王室や王様を軽んじる発言は厳禁",
+        category: "法律・ルール",
+        body: "王室や王様、王族に関する侮辱的な発言は法律で罰せられる可能性があります。話題として取り上げること自体を避けるのが無難です。",
+        tags: ["王室", "法律"]
+      },
+      {
+        title: "寺院での服装とマナー",
+        category: "服装・マナー",
+        body: "寺院では肩や膝が隠れる服装が基本です。靴は入口で脱ぎ、仏像や僧侶に対して失礼なポーズを取らないよう注意しましょう。",
+        tags: ["寺院", "服装", "仏教"]
+      },
+      {
+        title: "頭を触らない・足裏を向けない",
+        category: "コミュニケーション",
+        body: "人の頭は“神聖な場所”とされ、子どもであっても頭をなでるのは失礼とされます。また、人や仏像に足の裏を向けるのもNGです。",
+        tags: ["ボディランゲージ", "タブー"]
+      }
+    ]
+  },
+  {
+    code: "KR",
+    nameJa: "🇰🇷韓国",
+    nameEn: "South Korea",
+    region: "アジア",
+    keywords: ["韓国", "Korea", "South Korea", "ソウル"],
+    notes: "年上への礼儀や、飲食のマナーが重視される国です。",
+    rules: [
+      {
+        title: "年上・目上へのマナー",
+        category: "コミュニケーション",
+        body: "年上の人に対しては敬語を使う、先に座らない、飲み会で先にグラスを空けないなど、礼儀が重視されます。目上の人の様子を見て行動しましょう。",
+        tags: ["年功序列", "敬語"]
+      },
+      {
+        title: "お酒を飲むときの向き",
+        category: "飲食マナー",
+        body: "目上の人と飲むときは、相手の方から少し顔をそむけてグラスを傾けるのが礼儀とされています。両手でグラスを持つとより丁寧です。",
+        tags: ["飲み会", "お酒"]
+      },
+      {
+        title: "現金・カード事情",
+        category: "お金・支払い",
+        body: "カード決済が非常に普及していますが、屋台や一部の市場では現金のみのこともあります。少額の現金も持っておくと安心です。",
+        tags: ["支払い", "屋台"]
+      }
+    ]
+  },
+  {
+    code: "CN",
+    nameJa: "🇨🇳中国",
+    nameEn: "China",
+    region: "アジア",
+    keywords: ["中国", "China", "北京", "上海"],
+    notes: "キャッシュレス決済が進み、地域や世代による差も大きい国です。",
+    rules: [
+      {
+        title: "現金よりモバイル決済が主流",
+        category: "お金・支払い",
+        body: "都市部ではWeChat PayやAlipayなどのモバイル決済が主流です。旅行者向けにクレジットカードでチャージできる仕組みもありますが、最新情報の確認が必須です。",
+        tags: ["モバイル決済", "WeChatPay", "Alipay"]
+      },
+      {
+        title: "公共の場でのマナーは地域差あり",
+        category: "公共マナー",
+        body: "列の並び方や声の大きさなど、日本人の感覚と異なる場面も多いですが、現地では一般的なこともあります。イライラせず“文化の違い”と受け止めると楽です。",
+        tags: ["行列", "騒音", "文化差"]
+      },
+      {
+        title: "宴会での乾杯文化",
+        category: "飲食マナー",
+        body: "ビジネスシーンでは“乾杯（ガンベイ）”と一気飲みを勧められることがあります。体調や飲める量を事前に伝えておくと無理をしなくて済みます。",
+        tags: ["宴会", "乾杯"]
+      }
+    ]
+  },
+  {
+    code: "TR",
+    nameJa: "🇹🇷トルコ",
+    nameEn: "Türkiye",
+    region: "中東・ヨーロッパ",
+    keywords: ["トルコ", "Turkey", "Türkiye", "イスタンブール"],
+    notes: "イスラム文化とヨーロッパ文化が混ざり合った独特の雰囲気があります。",
+    rules: [
+      {
+        title: "モスクでの服装と礼儀",
+        category: "服装・マナー",
+        body: "モスクでは靴を脱ぎ、露出の少ない服装が基本です。女性は髪をスカーフで覆うことを求められる場合もあります。",
+        tags: ["モスク", "服装", "宗教施設"]
+      },
+      {
+        title: "お茶やおもてなしを断るとき",
+        category: "コミュニケーション",
+        body: "チャイ（紅茶）を勧められることが多く、断る場合でも笑顔で丁寧に“今は大丈夫です”と伝えると良い印象になります。",
+        tags: ["おもてなし", "チャイ"]
+      },
+      {
+        title: "猫や犬への接し方",
+        category: "公共マナー",
+        body: "街中に人懐っこい野良猫・野良犬が多く、地域で可愛がられています。むやみに追い払ったりせず、静かに接すると好印象です。",
+        tags: ["動物", "街中"]
+      }
+    ]
+  },
+  {
+    code: "AE",
+    nameJa: "🇦🇪アラブ首長国連邦（UAE）",
+    nameEn: "United Arab Emirates",
+    region: "中東",
+    keywords: ["UAE", "アラブ首長国連邦", "ドバイ", "アブダビ"],
+    notes: "イスラム圏のルールと、観光地としての寛容さが共存している国です。",
+    rules: [
+      {
+        title: "公共の場での服装",
+        category: "服装・マナー",
+        body: "モールやレストランでは肩や膝が隠れる服装が望ましいとされています。ビーチリゾート内では水着もOKですが、街中では控えめな服装を意識しましょう。",
+        tags: ["服装", "モール", "ビーチ"]
+      },
+      {
+        title: "公共の場でのスキンシップ",
+        category: "コミュニケーション",
+        body: "公共の場での過度なスキンシップ（キスや抱き合うなど）は控えるべきとされています。夫婦でも控えめにしておくと安心です。",
+        tags: ["スキンシップ", "公共マナー"]
+      },
+      {
+        title: "ラマダン期間中の飲食",
+        category: "宗教・行事",
+        body: "ラマダン中の日中は、公共の場での飲食が制限される場合があります。観光客向けに配慮されたエリアもありますが、現地の案内に従いましょう。",
+        tags: ["ラマダン", "飲食", "宗教行事"]
+      }
+    ]
+  }
+];
+
+
+    // --- DOM取得 ---
+    const searchInput = document.getElementById("searchInput");
+    const countryListEl = document.getElementById("countryList");
+    const emptyMessageEl = document.getElementById("emptyMessage");
+    const listViewEl = document.getElementById("listView");
+    const detailViewEl = document.getElementById("detailView");
+    const greetingDetailViewEl = document.getElementById("greetingDetailView");      // ★追加
+    const appTitleEl = document.getElementById("appTitle");
+    const appSubtitleEl = document.getElementById("appSubtitle");
+    const backBtnEl = document.getElementById("backBtn");
+    const countryMetaEl = document.getElementById("countryMeta");
+    const ruleListEl = document.getElementById("ruleList");
+    const greetingContainerEl = document.getElementById("greetingContainer");
+    const greetingDetailHintEl = document.getElementById("greetingDetailHint");      // ★追加
+    const greetingDetailListEl = document.getElementById("greetingDetailList");      // ★追加
+
+    let currentCountry = null;
+    let currentView = "list"; // "list" | "country" | "greeting" を管理
+
+    // --- 国リスト描画 ---
+    function renderCountryList(filterText) {
+      const text = (filterText || "").trim().toLowerCase();
+      countryListEl.innerHTML = "";
+
+      const filtered = countries.filter((country) => {
+        if (!text) return true;
+        const fullText =
+          country.nameJa +
+          " " +
+          country.nameEn +
+          " " +
+          country.keywords.join(" ");
+        return fullText.toLowerCase().includes(text);
+      });
+
+      if (filtered.length === 0) {
+        emptyMessageEl.classList.remove("hidden");
+        return;
+      } else {
+        emptyMessageEl.classList.add("hidden");
+      }
+
+      filtered.forEach((country) => {
+        const li = document.createElement("li");
+        li.className = "country-item";
+        li.addEventListener("click", () => openCountryDetail(country.code));
+
+        const main = document.createElement("div");
+        main.className = "country-main";
+
+        const nameEl = document.createElement("div");
+        nameEl.className = "country-name";
+        nameEl.textContent = country.nameJa + " (" + country.nameEn + ")";
+
+        const metaEl = document.createElement("div");
+        metaEl.className = "country-meta";
+        metaEl.textContent = country.region + " ・ マナー " + country.rules.length + " 件";
+
+        main.appendChild(nameEl);
+        main.appendChild(metaEl);
+
+        const chevron = document.createElement("div");
+        chevron.className = "chevron";
+        chevron.textContent = "＞";
+
+        li.appendChild(main);
+        li.appendChild(chevron);
+
+        countryListEl.appendChild(li);
+      });
+    }
+
+    // --- 詳細画面を開く ---
+    function openCountryDetail(code) {
+      const country = countries.find((c) => c.code === code);
+      if (!country) return;
+
+      currentCountry = country;
+
+      // ヘッダー更新
+      appTitleEl.textContent = country.nameJa;
+      appSubtitleEl.textContent = country.nameEn;
+      backBtnEl.style.display = "inline-block";
+
+      // メタ情報
+      countryMetaEl.textContent =
+        `${country.region} / マナー ${country.rules.length}件  ` +
+        (country.notes ? "｜ " + country.notes : "");
+
+      // ★ 基本のあいさつ「小さめカード」描画（中身は別画面で） ★
+      greetingContainerEl.innerHTML = "";
+      if (country.greetings && country.greetings.length > 0) {
+        const card = document.createElement("article");
+        card.className = "greeting-card";
+
+        const main = document.createElement("div");
+        main.className = "greeting-card-main";
+
+        const title = document.createElement("div");
+        title.className = "greeting-card-title";
+        title.textContent = "基本のあいさつ";
+
+        const sub = document.createElement("div");
+        sub.className = "greeting-card-sub";
+        sub.textContent = `代表的なあいさつ ${country.greetings.length}フレーズ`;
+
+        main.appendChild(title);
+        main.appendChild(sub);
+
+        const chevron = document.createElement("div");
+        chevron.className = "chevron";
+        chevron.textContent = "＞";
+
+        card.appendChild(main);
+        card.appendChild(chevron);
+
+        card.addEventListener("click", openGreetingDetail); // ★タップで詳細画面へ
+
+        greetingContainerEl.appendChild(card);
+      }
+
+      // ルール一覧描画
+      ruleListEl.innerHTML = "";
+      country.rules.forEach((rule) => {
+        const card = document.createElement("article");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+
+        const title = document.createElement("div");
+        title.className = "card-title";
+        title.textContent = rule.title;
+
+        const tag = document.createElement("div");
+        tag.className = "card-tag";
+        tag.textContent = rule.category;
+
+        header.appendChild(title);
+        header.appendChild(tag);
+
+        const body = document.createElement("div");
+        body.className = "card-body";
+        body.textContent = rule.body;
+
+        card.appendChild(header);
+        card.appendChild(body);
+
+        if (rule.tags && rule.tags.length > 0) {
+          const badgeRow = document.createElement("div");
+          badgeRow.className = "badge-row";
+          rule.tags.forEach((t) => {
+            const badge = document.createElement("span");
+            badge.className = "badge";
+            badge.textContent = "#" + t;
+            badgeRow.appendChild(badge);
+          });
+          card.appendChild(badgeRow);
+        }
+
+        ruleListEl.appendChild(card);
+      });
+
+      // 画面切り替え
+      listViewEl.classList.add("hidden");
+      detailViewEl.classList.remove("hidden");
+      // ★ ここを追加：今は「国詳細」画面にいるよ、という状態をセット
+      currentView = "country";
+    }
+
+    // --- 基本のあいさつ詳細画面を開く ---
+    function openGreetingDetail() {
+      if (!currentCountry || !currentCountry.greetings) return;
+
+      // ヘッダー更新（同じ国名で、副題だけ変えるイメージ）
+      appTitleEl.textContent = currentCountry.nameJa;
+      appSubtitleEl.textContent = "基本のあいさつ";
+
+      greetingDetailHintEl.textContent =
+        `${currentCountry.nameEn} / 定番のあいさつフレーズ`;
+
+      // テーブル描画
+      greetingDetailListEl.innerHTML = "";
+
+      const card = document.createElement("article");
+      card.className = "card";
+
+      const header = document.createElement("div");
+      header.className = "card-header";
+
+      const title = document.createElement("div");
+      title.className = "card-title";
+      title.textContent = "基本のあいさつ一覧";
+
+      header.appendChild(title);
+      card.appendChild(header);
+
+      const table = document.createElement("table");
+      table.className = "greeting-table";
+
+      currentCountry.greetings.forEach((g) => {
+        const tr = document.createElement("tr");
+
+        const tdLabel = document.createElement("td");
+        tdLabel.className = "greeting-label";
+        tdLabel.textContent = g.label;
+
+        const tdPhrase = document.createElement("td");
+        const phraseDiv = document.createElement("div");
+        phraseDiv.className = "greeting-phrase";
+        phraseDiv.textContent = g.phrase;
+        const readingDiv = document.createElement("div");
+        readingDiv.className = "greeting-reading";
+        readingDiv.textContent = `(${g.reading})`;
+
+        tdPhrase.appendChild(phraseDiv);
+        tdPhrase.appendChild(readingDiv);
+
+        tr.appendChild(tdLabel);
+        tr.appendChild(tdPhrase);
+        table.appendChild(tr);
+      });
+
+      card.appendChild(table);
+      greetingDetailListEl.appendChild(card);
+
+      // 画面切り替え：国詳細 → あいさつ詳細
+      detailViewEl.classList.add("hidden");
+      greetingDetailViewEl.classList.remove("hidden");
+      currentView = "greeting";
+    }
+
+    // --- 一覧画面へ戻る（ルート） ---
+    function goBackToList() {
+      currentCountry = null;
+      appTitleEl.textContent = "旅行マナーガイド β版";   // 最初のタイトルに合わせる
+      appSubtitleEl.textContent = "国を選んでマナー確認";
+      backBtnEl.style.display = "none";
+
+      greetingDetailViewEl.classList.add("hidden");
+      detailViewEl.classList.add("hidden");
+      listViewEl.classList.remove("hidden");
+      currentView = "list";
+    }
+
+    // --- 戻るボタンの挙動 ---
+    backBtnEl.addEventListener("click", () => {
+      if (currentView === "greeting") {
+        // あいさつ詳細 → 国詳細へ戻る
+        greetingDetailViewEl.classList.add("hidden");
+        detailViewEl.classList.remove("hidden");
+        appTitleEl.textContent = currentCountry.nameJa;
+        appSubtitleEl.textContent = currentCountry.nameEn;
+        currentView = "country";
+      } else if (currentView === "country") {
+        // 国詳細 → 一覧へ戻る
+        goBackToList();
+      }
+    });
+
+
+    // --- イベント設定 ---
+    searchInput.addEventListener("input", (e) => {
+      renderCountryList(e.target.value);
+    });
+
+
+    // 初期描画
+    renderCountryList("");
+</script>
+</body>
+</html>
